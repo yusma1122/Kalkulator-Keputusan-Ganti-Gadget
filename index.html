@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kalkulator Keputusan Ganti Gadget</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --yellow: #ffd700;
+        --black: #000000;
+        --white: #ffffff;
+        --muted: #a3a3a3;
+        --card: #0c0c0c;
+        --border: rgba(255, 255, 255, 0.08);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --radius: 16px;
+        --transition: 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        --soft-red: #2a1012;
+        --soft-red-acc: #ff6b6b;
+        --soft-yellow: #1a1606;
+        --soft-yellow-acc: #ffe56d;
+        --soft-green: #0e1a14;
+        --soft-green-acc: #47e881;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--black);
+        color: var(--white);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        line-height: 1.6;
+      }
+      a {
+        color: var(--yellow);
+        text-decoration: none;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 20px 16px 72px;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(8px);
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.9),
+          rgba(0, 0, 0, 0.6) 60%,
+          rgba(0, 0, 0, 0)
+        );
+        border-bottom: 1px solid var(--border);
+      }
+      .hero {
+        display: grid;
+        gap: 16px;
+        padding: 18px 16px;
+        align-items: center;
+        grid-template-columns: 1fr auto;
+      }
+      .title {
+        font-family: Poppins, Inter, sans-serif;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+      .title span {
+        color: var(--yellow);
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      /* header credit */
+      .credit {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 999px;
+        object-fit: cover;
+        border: 2px solid var(--yellow);
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.15);
+      }
+
+      .credit-info {
+        display: flex;
+        flex-direction: column;
+      }
+      .credit-info .name {
+        font-weight: 800;
+      }
+      .credit-info .links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-weight: 600;
+      }
+      .motto {
+        color: #e5e7eb;
+        font-size: 0.92rem;
+        margin-top: 4px;
+      }
+      /* lang switch + live badge */
+      .top-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-self: end;
+      }
+      .lang {
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        color: var(--white);
+        padding: 10px 12px;
+        border-radius: 10px;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 215, 0, 0.08);
+        border: 1px solid rgba(255, 215, 0, 0.35);
+        transition: box-shadow var(--transition);
+      }
+      .badge .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--yellow);
+        box-shadow: 0 0 14px 4px rgba(255, 215, 0, 0.75),
+          0 0 30px 8px rgba(255, 215, 0, 0.25);
+        animation: pulse 1.8s infinite;
+      }
+      .badge.glow {
+        box-shadow: 0 0 22px 4px rgba(255, 215, 0, 0.35);
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        60% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      /* layout */
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .cols-2 {
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 760px) {
+        .cols-2 {
+          grid-template-columns: 1.1fr 1fr;
+        }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-family: Poppins, sans-serif;
+      }
+      .desc {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin: 2px 0 12px;
+      }
+      /* form */
+      .fields {
+        display: grid;
+        gap: 12px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      label {
+        color: #d1d5db;
+      }
+      .control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        border-radius: 12px;
+      }
+      .control:focus-within {
+        border-color: rgba(255, 215, 0, 0.5);
+      }
+      .control input,
+      .control select {
+        flex: 1;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        color: var(--white);
+        font-size: 1rem;
+      }
+      .suffix {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .help {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+      .checks {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        border-radius: 10px;
+      }
+      /* progress */
+      .progress {
+        height: 12px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+        transition: width 450ms ease;
+      }
+      .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-top: 6px;
+      }
+      /* kpi */
+      .kpi {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        transition: transform var(--transition), border var(--transition);
+      }
+      .kpi:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 215, 0, 0.35);
+      }
+      .kpi .label {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .kpi .value {
+        font-family: Poppins, sans-serif;
+        font-size: 1.25rem;
+      }
+      /* motive */
+      .motive {
+        border-radius: 18px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+      .motive.low {
+        background: linear-gradient(180deg, var(--soft-red), #080808);
+        border-color: rgba(255, 107, 107, 0.25);
+      }
+      .motive.edge {
+        background: linear-gradient(180deg, var(--soft-yellow), #080808);
+        border-color: rgba(255, 229, 109, 0.25);
+      }
+      .motive.high {
+        background: linear-gradient(180deg, var(--soft-green), #080808);
+        border-color: rgba(71, 232, 129, 0.25);
+      }
+      .motive h4 {
+        margin: 0 0 6px;
+        font-family: Poppins, sans-serif;
+      }
+      /* buttons */
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        appearance: none;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+        background: var(--yellow);
+        color: #000;
+        font-weight: 800;
+        padding: 12px 16px;
+        border-radius: 12px;
+        transition: transform var(--transition), filter var(--transition);
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+      .ghost {
+        background: transparent;
+        color: var(--yellow);
+        border: 1px solid rgba(255, 215, 0, 0.5);
+      }
+      /* footer */
+      footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .hr {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 0 16px;
+      }
+      .credits {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: #0f0f0f;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+      }
+      /* toast */
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        background: #0f0f0f;
+        color: var(--white);
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        border-radius: 10px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all var(--transition);
+        box-shadow: var(--shadow);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* center helper for header credit on request */
+      .center {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap hero">
+        <div>
+          <h1 class="title"><span>Kalkulator</span> Keputusan Ganti Gadget</h1>
+          <p class="subtitle" data-i="subtitle">
+            Hitung apakah upgrade gadget benar-benar layak—berdasarkan biaya per
+            hari, umur pakai, dan manfaat fitur baru.
+          </p>
+
+          <!-- CREDIT AREA -->
+          <div class="credit center">
+            <img class="avatar" src="yusma.jpg" alt="Foto Yusma Rahman" />
+            <div class="credit-info">
+              <div>
+                <span class="name">Yusma Rahman</span> —
+                <span data-i="role">Web Developer</span>
+              </div>
+              <div class="links">
+                <a
+                  href="https://www.linkedin.com/in/yusmarahman09/"
+                  target="_blank"
+                  rel="noopener"
+                  >LinkedIn</a
+                >
+                <a
+                  href="https://github.com/yusma1122"
+                  target="_blank"
+                  rel="noopener"
+                  >GitHub</a
+                >
+              </div>
+              <div class="motto" data-i="motto">
+                “Sometimes we stay not because we love the job, but because life
+                demands it. Use this time to prepare, grow, and build your
+                escape plan — so one day, you work where your heart truly
+                belongs.”
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="top-right">
+          <select id="lang" class="lang" aria-label="Language">
+            <option value="id" selected>Indonesia</option>
+            <option value="en">English</option>
+          </select>
+          <div class="badge" id="liveBadge" aria-live="polite">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="muted" data-i="badge">Score</span>
+            <strong id="scoreNow">0%</strong>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="grid cols-2">
+        <!-- FORM -->
+        <section class="card" aria-labelledby="fTitle">
+          <h3 id="fTitle" data-i="formTitle">Data Gadget</h3>
+          <p class="desc" data-i="formDesc">
+            Isi data di bawah. Perhitungan berjalan
+            <strong>real-time</strong> saat kamu mengetik.
+          </p>
+
+          <div class="fields">
+            <div class="field">
+              <label for="newPrice" data-i="newPrice">Harga gadget baru</label>
+              <div class="control">
+                <input
+                  id="newPrice"
+                  type="number"
+                  min="0"
+                  step="10000"
+                  placeholder="contoh: 12.000.000"
+                />
+                <span class="suffix">Rp</span>
+              </div>
+              <div class="help" data-i="hintNewPrice">
+                Harga beli gadget baru (on-price).
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="oldBuy" data-i="oldBuy">Harga beli gadget lama</label>
+              <div class="control">
+                <input
+                  id="oldBuy"
+                  type="number"
+                  min="0"
+                  step="10000"
+                  placeholder="contoh: 8.000.000"
+                />
+                <span class="suffix">Rp</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label data-i="ageNow">Umur pakai gadget lama (saat ini)</label>
+              <div class="control">
+                <input
+                  id="ageYears"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="2"
+                />
+                <span class="suffix" data-i="years">tahun</span>
+                <input
+                  id="ageMonths"
+                  type="number"
+                  min="0"
+                  max="11"
+                  step="1"
+                  placeholder="6"
+                />
+                <span class="suffix" data-i="months">bulan</span>
+              </div>
+              <div class="help" data-i="hintAge">
+                Sejak pertama kali dipakai.
+              </div>
+            </div>
+
+            <div class="field">
+              <label data-i="lifespan">Umur pakai yang diharapkan (baru)</label>
+              <div class="control">
+                <input
+                  id="lifeYears"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="3"
+                />
+                <span class="suffix" data-i="years">tahun</span>
+                <input
+                  id="lifeMonths"
+                  type="number"
+                  min="0"
+                  max="11"
+                  step="1"
+                  placeholder="0"
+                />
+                <span class="suffix" data-i="months">bulan</span>
+              </div>
+              <div class="help" data-i="hintLife">
+                Kira-kira berapa lama akan dipakai.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="tradeIn" data-i="tradeIn"
+                >Nilai jual gadget lama (trade-in)</label
+              >
+              <div class="control">
+                <input
+                  id="tradeIn"
+                  type="number"
+                  min="0"
+                  step="10000"
+                  placeholder="contoh: 2.000.000"
+                />
+                <span class="suffix">Rp</span>
+              </div>
+              <div class="help" data-i="hintTrade">
+                Perkiraan harga jual bekas.
+              </div>
+            </div>
+
+            <div class="field">
+              <label data-i="benefitTitle"
+                >Manfaat fitur baru (centang yang relevan)</label
+              >
+              <div class="checks">
+                <label class="check"
+                  ><input type="checkbox" class="b" value="20" />
+                  <span data-i="bCamera">Kamera jauh lebih bagus</span></label
+                >
+                <label class="check"
+                  ><input type="checkbox" class="b" value="15" />
+                  <span data-i="bBattery">Baterai lebih awet</span></label
+                >
+                <label class="check"
+                  ><input type="checkbox" class="b" value="15" />
+                  <span data-i="bPerformance">Performa meningkat</span></label
+                >
+                <label class="check"
+                  ><input type="checkbox" class="b" value="10" />
+                  <span data-i="bWarranty"
+                    >Garansi/dukungan lebih lama</span
+                  ></label
+                >
+                <label class="check"
+                  ><input type="checkbox" class="b" value="10" />
+                  <span data-i="bConnectivity"
+                    >Konektivitas baru (5G/Thunderbolt)</span
+                  ></label
+                >
+                <label class="check"
+                  ><input type="checkbox" class="b" value="10" />
+                  <span data-i="bOther"
+                    >Fitur khusus lain penting bagiku</span
+                  ></label
+                >
+              </div>
+              <div class="help" data-i="benefitHelp">
+                Setiap centang menambah skor manfaat (%). Maksimal dihitung
+                sampai 100%.
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="copyBtn" class="btn" data-i="copy">
+                Salin Ringkasan
+              </button>
+              <button id="resetBtn" class="btn ghost" data-i="reset">
+                Reset
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- OUTPUT -->
+        <section class="card" aria-labelledby="rTitle">
+          <h3 id="rTitle" data-i="resultTitle">Hasil & Rekomendasi</h3>
+
+          <div>
+            <div
+              class="progress"
+              role="progressbar"
+              aria-label="Worth It Score"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div id="bar" class="bar"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="scoreText">Score: 0%</span>
+              <span id="benefitText">Benefit: 0%</span>
+              <span id="deltaText">Δ/Day: Rp0</span>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="grid" style="grid-template-columns: 1fr 1fr 1fr">
+            <div class="kpi">
+              <span class="label" data-i="oldCPD">Cost per day (lama)</span>
+              <div id="oldPerDay" class="value">Rp0</div>
+            </div>
+            <div class="kpi">
+              <span class="label" data-i="newCPD">Cost per day (baru)</span>
+              <div id="newPerDay" class="value">Rp0</div>
+            </div>
+            <div class="kpi">
+              <span class="label" data-i="deltaCPD">Selisih per hari</span>
+              <div id="diffPerDay" class="value">Rp0</div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div id="motive" class="motive edge" role="status" aria-live="polite">
+            <h4 id="motiveTitle">Zona aman tipis</h4>
+            <p id="motiveText">
+              Isi data untuk melihat rekomendasi. Pastikan umur pakai dan nilai
+              jual terisi realistis.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <p data-i="footerTip">
+          Tips: gunakan umur pakai yang realistis. “Cost per day” dihitung dari
+          (harga − nilai jual) dibagi total hari pemakaian.
+        </p>
+        <div class="hr"></div>
+        <div class="credits">
+          <div>
+            <strong>Yusma Rahman</strong> —
+            <span data-i="role">Web Developer</span>
+          </div>
+          <div>
+            <a
+              href="https://www.linkedin.com/in/yusmarahman09/"
+              target="_blank"
+              rel="noopener"
+              >LinkedIn</a
+            >
+            •
+            <a
+              href="https://github.com/yusma1122"
+              target="_blank"
+              rel="noopener"
+              >GitHub</a
+            >
+          </div>
+          <div class="motto" data-i="motto">
+            “Sometimes we stay not because we love the job, but because life
+            demands it. Use this time to prepare, grow, and build your escape
+            plan — so one day, you work where your heart truly belongs.”
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <div id="toast" class="toast">Copied to clipboard</div>
+
+    <script>
+      // ===== i18n strings =====
+      const STR = {
+        id: {
+          subtitle:
+            "Hitung apakah upgrade gadget benar-benar layak—berdasarkan biaya per hari, umur pakai, dan manfaat fitur baru.",
+          role: "Web Developer",
+          motto:
+            "“Upgrade bukan soal ikut tren, tapi soal apakah nilainya sebanding dengan biaya dan waktumu. Hitung dulu, baru putuskan.”",
+          badge: "Skor",
+          formTitle: "Data Gadget",
+          formDesc:
+            "Isi data di bawah. Perhitungan berjalan <strong>real-time</strong> saat kamu mengetik.",
+          newPrice: "Harga gadget baru",
+          hintNewPrice: "Harga beli gadget baru (on-price).",
+          oldBuy: "Harga beli gadget lama",
+          ageNow: "Umur pakai gadget lama (saat ini)",
+          years: "tahun",
+          months: "bulan",
+          hintAge: "Sejak pertama kali dipakai.",
+          lifespan: "Umur pakai yang diharapkan (baru)",
+          hintLife: "Kira-kira berapa lama akan dipakai.",
+          tradeIn: "Nilai jual gadget lama (trade-in)",
+          hintTrade: "Perkiraan harga jual bekas.",
+          benefitTitle: "Manfaat fitur baru (centang yang relevan)",
+          bCamera: "Kamera jauh lebih bagus",
+          bBattery: "Baterai lebih awet",
+          bPerformance: "Performa meningkat",
+          bWarranty: "Garansi/dukungan lebih lama",
+          bConnectivity: "Konektivitas baru (5G/Thunderbolt)",
+          bOther: "Fitur khusus lain penting bagiku",
+          benefitHelp:
+            "Setiap centang menambah skor manfaat (%). Maksimal dihitung sampai 100%.",
+          copy: "Salin Ringkasan",
+          reset: "Reset",
+          resultTitle: "Hasil & Rekomendasi",
+          oldCPD: "Cost per day (lama)",
+          newCPD: "Cost per day (baru)",
+          deltaCPD: "Selisih per hari",
+          footerTip:
+            "Tips: gunakan umur pakai yang realistis. “Cost per day” dihitung dari (harga − nilai jual) dibagi total hari pemakaian.",
+        },
+        en: {
+          subtitle:
+            "Decide if upgrading is truly worth it—based on daily cost, lifespan, and the benefits of new features.",
+          role: "Web Developer",
+          motto:
+            "“Upgrading isn’t about following trends—it’s about whether the value outweighs the cost and your time. Calculate first, decide after.”",
+          badge: "Score",
+          formTitle: "Gadget Data",
+          formDesc:
+            "Fill the fields below. Calculations update in <strong>real-time</strong> as you type.",
+          newPrice: "New gadget price",
+          hintNewPrice: "Purchase price of the new device.",
+          oldBuy: "Old device purchase price",
+          ageNow: "Old device current age",
+          years: "years",
+          months: "months",
+          hintAge: "Since first use.",
+          lifespan: "Expected lifespan (new device)",
+          hintLife: "How long you plan to use it.",
+          tradeIn: "Old device resale/trade-in value",
+          hintTrade: "Estimated second-hand price.",
+          benefitTitle: "New feature benefits (tick what applies)",
+          bCamera: "Much better camera",
+          bBattery: "Longer battery life",
+          bPerformance: "Higher performance",
+          bWarranty: "Longer warranty/support",
+          bConnectivity: "New connectivity (5G/Thunderbolt)",
+          bOther: "Other important feature for me",
+          benefitHelp: "Each tick adds benefit score (%). Capped at 100%.",
+          copy: "Copy Summary",
+          reset: "Reset",
+          resultTitle: "Results & Recommendation",
+          oldCPD: "Cost per day (old)",
+          newCPD: "Cost per day (new)",
+          deltaCPD: "Difference per day",
+          footerTip:
+            "Tip: use a realistic lifespan. Cost per day = (price − resale) divided by total days of use.",
+        },
+      };
+
+      const $ = (id) => document.getElementById(id);
+      const nf = new Intl.NumberFormat("id-ID");
+      const cf0 = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+      });
+
+      const els = {
+        newPrice: $("newPrice"),
+        oldBuy: $("oldBuy"),
+        ageYears: $("ageYears"),
+        ageMonths: $("ageMonths"),
+        lifeYears: $("lifeYears"),
+        lifeMonths: $("lifeMonths"),
+        tradeIn: $("tradeIn"),
+        bar: $("bar"),
+        scoreText: $("scoreText"),
+        benefitText: $("benefitText"),
+        deltaText: $("deltaText"),
+        oldPerDay: $("oldPerDay"),
+        newPerDay: $("newPerDay"),
+        diffPerDay: $("diffPerDay"),
+        motive: $("motive"),
+        motiveTitle: $("motiveTitle"),
+        motiveText: $("motiveText"),
+        scoreNow: $("scoreNow"),
+        liveBadge: $("liveBadge"),
+        copyBtn: $("copyBtn"),
+        resetBtn: $("resetBtn"),
+        toast: $("toast"),
+        lang: $("lang"),
+      };
+
+      // default example values
+      const defaults = {
+        newPrice: 12000000,
+        oldBuy: 8000000,
+        ageYears: 2,
+        ageMonths: 6,
+        lifeYears: 3,
+        lifeMonths: 0,
+        tradeIn: 2000000,
+      };
+      Object.keys(defaults).forEach((k) => {
+        const e = els[k];
+        if (e) e.value = defaults[k];
+      });
+
+      function days(y, m) {
+        return y * 365 + m * 30;
+      }
+
+      function clamp(n, a, b) {
+        return Math.min(Math.max(n, a), b);
+      }
+
+      function sumBenefits() {
+        const boxes = Array.from(document.querySelectorAll(".b"));
+        let total = boxes.reduce(
+          (s, b) => s + (b.checked ? Number(b.value) : 0),
+          0
+        );
+        return Math.round(Math.min(total, 100));
+      }
+
+      function calc() {
+        const np = +els.newPrice.value || 0;
+        const ob = +els.oldBuy.value || 0;
+        const ay = clamp(+els.ageYears.value || 0, 0, 50);
+        const am = clamp(+els.ageMonths.value || 0, 0, 11);
+        const ly = clamp(+els.lifeYears.value || 0, 0, 50);
+        const lm = clamp(+els.lifeMonths.value || 0, 0, 11);
+        const ti = +els.tradeIn.value || 0;
+
+        const usedDays = Math.max(days(ay, am), 1);
+        const lifeDays = Math.max(days(ly, lm), 1);
+
+        // Cost per day calculations
+        const oldCostBasis = Math.max(ob - ti, 0); // treat trade-in as remaining value you can recover
+        const oldPerDay = oldCostBasis / usedDays;
+
+        const newCostBasis = Math.max(np - ti, 0);
+        const newPerDay = newCostBasis / lifeDays;
+
+        const diffPerDay = newPerDay - oldPerDay;
+
+        const benefit = sumBenefits(); // 0..100
+
+        // Worth It Score heuristic:
+        // Start from benefit, subtract penalty for extra daily cost relative to newPerDay
+        const penalty =
+          newPerDay > 0 ? clamp((diffPerDay / newPerDay) * 100, -100, 100) : 0;
+        let score = Math.round(clamp(benefit - Math.max(0, penalty), 0, 100));
+
+        // Decision tiers
+        let tier = "edge";
+        let title = "Zona aman tipis";
+        let text =
+          "Isi data untuk melihat rekomendasi. Pastikan umur pakai dan nilai jual terisi realistis.";
+        if (diffPerDay <= 0 && benefit >= 20) {
+          tier = "high";
+          title =
+            els.lang.value === "en"
+              ? "Upgrade saves money"
+              : "Upgrade hemat biaya";
+          text =
+            els.lang.value === "en"
+              ? "Your new setup is cheaper per day and adds benefits. This is a strong case to upgrade."
+              : "Biaya per hari turun dan manfaat bertambah. Ini alasan kuat untuk upgrade.";
+          score = Math.max(score, 70);
+        } else if (score >= 70) {
+          tier = "high";
+          title = els.lang.value === "en" ? "Go for it" : "Gas, layak ganti";
+          text =
+            els.lang.value === "en"
+              ? "Benefits clearly outweigh the extra daily cost. Upgrade looks worthwhile."
+              : "Manfaat jelas mengungguli tambahan biaya per hari. Upgrade terlihat layak.";
+        } else if (score >= 45) {
+          tier = "edge";
+          title =
+            els.lang.value === "en"
+              ? "Borderline—consider waiting"
+              : "Tipis—pertimbangkan menunggu";
+          text =
+            els.lang.value === "en"
+              ? "Benefits are close to the extra cost. If your old device still works, consider waiting for a bigger jump or better price."
+              : "Manfaat hampir setara dengan biaya tambahan. Jika perangkat lama masih ok, pertimbangkan menunggu lonjakan fitur atau harga lebih baik.";
+        } else {
+          tier = "low";
+          title =
+            els.lang.value === "en"
+              ? "Not worth it (yet)"
+              : "Belum layak ganti";
+          text =
+            els.lang.value === "en"
+              ? "Extra daily cost is high relative to benefits. Keep using the current device and save for a bigger upgrade."
+              : "Biaya tambahan per hari tinggi dibanding manfaat. Lanjutkan pakai perangkat lama dan nabung untuk lompatan yang lebih signifikan.";
+        }
+
+        // UI updates
+        $("oldPerDay").textContent = cf0.format(Math.round(oldPerDay));
+        $("newPerDay").textContent = cf0.format(Math.round(newPerDay));
+        $("diffPerDay").textContent =
+          (diffPerDay >= 0 ? "+" : "") + cf0.format(Math.round(diffPerDay));
+
+        $("benefitText").textContent =
+          (els.lang.value === "en" ? "Benefit: " : "Benefit: ") + benefit + "%";
+        $("deltaText").textContent =
+          (els.lang.value === "en" ? "Δ/Day: " : "Δ/Day: ") +
+          (diffPerDay >= 0 ? "+" : "") +
+          cf0.format(Math.round(diffPerDay));
+
+        els.bar.style.width = score + "%";
+        els.scoreText.textContent =
+          (els.lang.value === "en" ? "Score: " : "Skor: ") + score + "%";
+
+        const prev = els.scoreNow.dataset.prev || "0";
+        const nowTxt = score + "%";
+        if (prev !== nowTxt) {
+          els.liveBadge.classList.add("glow");
+          setTimeout(() => els.liveBadge.classList.remove("glow"), 250);
+          els.scoreNow.dataset.prev = nowTxt;
+        }
+        els.scoreNow.textContent = nowTxt;
+
+        els.motive.classList.remove("low", "edge", "high");
+        els.motive.classList.add(tier);
+        els.motiveTitle.textContent = title;
+        els.motiveText.textContent = text;
+
+        return { oldPerDay, newPerDay, diffPerDay, benefit, score };
+      }
+
+      // Wire inputs
+      const inputs = [
+        "newPrice",
+        "oldBuy",
+        "ageYears",
+        "ageMonths",
+        "lifeYears",
+        "lifeMonths",
+        "tradeIn",
+      ];
+      inputs.forEach((k) => els[k].addEventListener("input", calc));
+      Array.from(document.querySelectorAll(".b")).forEach((b) =>
+        b.addEventListener("change", calc)
+      );
+
+      // Copy
+      function summary(d) {
+        return [
+          "— KEPUTUSAN GANTI GADGET —",
+          `Old CPD: ${cf0.format(Math.round(d.oldPerDay))}`,
+          `New CPD: ${cf0.format(Math.round(d.newPerDay))}`,
+          `Δ/Day: ${
+            (d.diffPerDay >= 0 ? "+" : "") +
+            cf0.format(Math.round(d.diffPerDay))
+          }`,
+          `Benefit: ${d.benefit}%`,
+          `Score: ${d.score}%`,
+        ].join("\n");
+      }
+      function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add("show");
+        setTimeout(() => els.toast.classList.remove("show"), 2000);
+      }
+      els.copyBtn.addEventListener("click", async () => {
+        const d = calc();
+        try {
+          await navigator.clipboard.writeText(summary(d));
+          showToast(
+            els.lang.value === "en" ? "Summary copied" : "Ringkasan disalin"
+          );
+        } catch (e) {
+          showToast(els.lang.value === "en" ? "Copy failed" : "Gagal menyalin");
+        }
+      });
+
+      // Reset
+      els.resetBtn.addEventListener("click", () => {
+        Object.keys(defaults).forEach((k) => {
+          if (els[k]) els[k].value = "";
+        });
+        document.querySelectorAll(".b").forEach((b) => (b.checked = false));
+        calc();
+      });
+
+      // Language switch
+      function applyLang(lang) {
+        const dict = STR[lang];
+        document.querySelectorAll("[data-i]").forEach((el) => {
+          const key = el.getAttribute("data-i");
+          if (dict[key] !== undefined) {
+            if (key === "formDesc") {
+              el.innerHTML = dict[key];
+            } else {
+              el.textContent = dict[key];
+            }
+          }
+        });
+        // update dynamic labels
+        calc();
+      }
+      els.lang.addEventListener("change", (e) => applyLang(e.target.value));
+
+      // init
+      applyLang("id"); // default Indonesian
+      calc();
+    </script>
+  </body>
+</html>
